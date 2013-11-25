@@ -26,20 +26,42 @@ $(function() {
 
   // highlight matches
   var filterBox = $('#filter');
-  filterBox.bind('input', function() {
+    filterBox.on('keypress', function() {
 
     var matcher = filterBox.val();
     var lis = buffer.find('li');
 
     if(!matcher.length) {
-      lis.removeClass('matching');
+      lis.show();
+      // lis.removeClass('matching');
     } else {
       lis.each(function(index, li) {
+        // lis.show();
         var isMatching = new RegExp(matcher, 'ig').test(li.innerText);
-        $(li).toggleClass('matching', isMatching);
+        if (isMatching) {
+          $(li).show();
+        } else {
+          $(li).hide();
+        }
+        // $(li).toggleClass('matching', isMatching);
       });
+
     }
   });
+  // filterBox.bind('input', function() {
+
+  //   var matcher = filterBox.val();
+  //   var lis = buffer.find('li');
+
+  //   if(!matcher.length) {
+  //     lis.removeClass('matching');
+  //   } else {
+  //     lis.each(function(index, li) {
+  //       var isMatching = new RegExp(matcher, 'ig').test(li.innerText);
+  //       $(li).toggleClass('matching', isMatching);
+  //     });
+  //   }
+  // });
 
   var log = console.log.bind(console, 'TAIL');
 
