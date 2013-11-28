@@ -24,44 +24,41 @@ $(function() {
     }
   });
 
-  // highlight matches
-  var filterBox = $('#filter');
-    filterBox.on('keypress', function() {
-
+  function filterList() {
     var matcher = filterBox.val();
     var lis = buffer.find('li');
 
     if(!matcher.length) {
       lis.show();
-      // lis.removeClass('matching');
     } else {
       lis.each(function(index, li) {
-        // lis.show();
         var isMatching = new RegExp(matcher, 'ig').test(li.innerText);
         if (isMatching) {
           $(li).show();
         } else {
           $(li).hide();
         }
-        // $(li).toggleClass('matching', isMatching);
       });
 
     }
+  }
+
+  var filterBox = $('#filter');
+
+  // Clear buffer
+
+  var clearBuffer = $('#clearBuffer');
+  clearBuffer.click(function(){
+    buffer.empty();
   });
-  // filterBox.bind('input', function() {
 
-  //   var matcher = filterBox.val();
-  //   var lis = buffer.find('li');
 
-  //   if(!matcher.length) {
-  //     lis.removeClass('matching');
-  //   } else {
-  //     lis.each(function(index, li) {
-  //       var isMatching = new RegExp(matcher, 'ig').test(li.innerText);
-  //       $(li).toggleClass('matching', isMatching);
-  //     });
-  //   }
-  // });
+
+  var downloadBuffer = $('#downloadBuffer');
+  downloadBuffer.click(function(){
+    var blob = new Blob([buffer.text()], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, 'logs.txt')
+  });
 
   var log = console.log.bind(console, 'TAIL');
 
@@ -72,15 +69,16 @@ $(function() {
 
   var selector = $('#selector select');
   socket.on('list', function(logFiles) {
+    
     $.each(logFiles, function() {
       var log = new Option(this,this);
-      if ($.browser.msie) {
-        selector[0].add(log);
-      } else {
-        selector[0].add(log,null);
-      }
+      
+        if ($.browser.msie) {
+          selector[0].add(log);
+        } else {
+          selector[0].add(log,null);
+        }
     });
-
     selector.bind('change',function(e){
 
       var log = selector[0];
@@ -100,16 +98,24 @@ $(function() {
   });
 
   socket.on('tail', function(backLog) {
-
+    var matcher = filterBox.val();
     $.each(backLog, function(index, entry) {
 
       if(!entry) {
         return;
       }
 
-      var li = $('<li>');
-      li.text(entry);
-      buffer.append(li);
+      
+      
+      var isMatching = new RegExp(matcher, 'ig').test(entry);
+      if(entry.indexOf(matcher) >= 0) {
+        var li = $('<li>');
+        li.text(entry);
+        buffer.append(li);
+        li.on('click', function() {
+          $(this).toggleClass("clicked");
+        });
+      }
     });
 
     if(!scrollToggle.hasClass('down')) {

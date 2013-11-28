@@ -4,6 +4,7 @@
   <title>Websockets tail Server</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="application/ecmascript" async="" src="https://raw.github.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
@@ -15,6 +16,8 @@
       </select>
       <button id="scrollToggle">Disable auto-scroll</button>
       <input type="text" id="filter" size=15 placeholder="filter">
+      <button id="clearBuffer">Clear buffer</button>
+      <button id="downloadBuffer">Download</button>
     </div>
   </div>
   <ol id="tail" class="monospace selection"></ol>
